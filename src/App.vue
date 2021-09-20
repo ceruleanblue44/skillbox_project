@@ -1,110 +1,45 @@
 <template>
-   <section class="catalog">
+ <section class="catalog">
+  <ProductList :products="products">
+    <ProductItem />
+  </ProductList>
 
-    <ul class="catalog__list">
-      <li class="catalog__item" v-for="(product, index)  in products" :key="index">
-        <a class="catalog__pic" href="#">
-          <img :src="product.image" :alt="product.title">
-        </a>
+  <BasePagination v-model="page"
+                  :count="countProducts"
+                  :per-page="productsPerPage"
+/>
 
-        <h3 class="catalog__title">
-          <a href="#">
-            {{ product.title }}
-          </a>
-        </h3>
+ </section>
 
-        <span class="catalog__price">
-         {{ product.price }}
-        </span>
-
-         <ul class="colors colors--black">
-          <li class="colors__item">
-            <label class="colors__label">
-              <input class="colors__radio sr-only" type="radio" name="color-1" value="#73B6EA"
-                checked="">
-              <span class="colors__value" style="background-color: #73B6EA;">
-              </span>
-            </label>
-          </li>
-          <li class="colors__item">
-            <label class="colors__label">
-              <input class="colors__radio sr-only" type="radio" name="color-1" value="#8BE000">
-              <span class="colors__value" style="background-color: #8BE000;">
-              </span>
-            </label>
-          </li>
-          <li class="colors__item">
-            <label class="colors__label">
-              <input class="colors__radio sr-only" type="radio" name="color-1" value="#222">
-              <span class="colors__value" style="background-color: #222;">
-              </span>
-            </label>
-          </li>
-        </ul>
-      </li>
-    </ul>
-
-     <ul class="catalog__pagination pagination">
-      <li class="pagination__item">
-        <a class="pagination__link pagination__link--arrow pagination__link--disabled"
-          aria-label="Предыдущая страница">
-          <svg width="8" height="14" fill="currentColor">
-            <use xlink:href="#icon-arrow-left"></use>
-          </svg>
-        </a>
-      </li>
-      <li class="pagination__item">
-        <a class="pagination__link pagination__link--current">
-          1
-        </a>
-      </li>
-      <li class="pagination__item">
-        <a class="pagination__link" href="#">
-          2
-        </a>
-      </li>
-      <li class="pagination__item">
-        <a class="pagination__link" href="#">
-          3
-        </a>
-      </li>
-      <li class="pagination__item">
-        <a class="pagination__link" href="#">
-          4
-        </a>
-      </li>
-      <li class="pagination__item">
-        <a class="pagination__link" href="#">
-          ...
-        </a>
-      </li>
-      <li class="pagination__item">
-        <a class="pagination__link" href="#">
-          10
-        </a>
-      </li>
-      <li class="pagination__item">
-        <a class="pagination__link pagination__link--arrow" href="#"
-          aria-label="Следующая страница">
-          <svg width="8" height="14" fill="currentColor">
-            <use xlink:href="#icon-arrow-right"></use>
-          </svg>
-        </a>
-      </li>
-    </ul>
-  </section>
 </template>
+
+<!-- eslint-disable max-len -->
+<!-- The prop is in camelCase in the component, but here it's in kebab-case, Vue    automatically converts kebab-case into camelCase when passing props. This syntax is necessary 'cos we are using HTML-based attribute syntax (dashes, no camelCase) -->
 
 <script>
 
 import products from './data/products';
+import ProductList from './components/ProductList.vue';
+import ProductItem from './components/ProductItem.vue';
+import BasePagination from './components/BasePagination.vue';
 
 export default {
   name: 'App',
+  components: { ProductList, ProductItem, BasePagination },
   data() {
     return {
-      products,
+      page: 1,
+      productsPerPage: 3,
     };
+  },
+  computed: {
+    products() {
+      const offset = (this.page - 1) * this.productsPerPage;
+      return products.slice(offset, offset + this.productsPerPage);
+    },
+    countProducts() {
+      return products.length;
+    },
   },
 };
 
