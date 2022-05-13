@@ -26,10 +26,14 @@
             </label>
           </fieldset>
 
-          <fieldset class="form__block">
-            <legend class="form__legend">Цвет</legend>
-            <ColorFilter :color-id="colorId"/>
-          </fieldset>
+      <fieldset class="form__block">
+        <legend class="form__legend">Цвет</legend>
+        <ul class="colors">
+          <ColorList class="colors"
+            :color-list="colors"
+            :current-color.sync="currentColor"/>
+        </ul>
+      </fieldset>
 
           <fieldset class="form__block">
             <legend class="form__legend">Объемб в ГБ</legend>
@@ -104,7 +108,8 @@
 <script>
 
 import categories from '../data/categories';
-import ColorFilter from './ColorFilter.vue';
+import colors from '../data/colors';
+import ColorList from './ColorList.vue';
 
 export default {
   data() {
@@ -112,13 +117,17 @@ export default {
       currentPriceFrom: 0,
       currentPriceTo: 0,
       currentCategoryId: 0,
+      currentColor: '',
     };
   },
-  components: { ColorFilter },
+  components: { ColorList },
   props: ['priceFrom', 'priceTo', 'categoryId'],
   computed: {
     categories() {
       return categories;
+    },
+    colors() {
+      return colors;
     },
   },
   watch: {
@@ -131,17 +140,22 @@ export default {
     categoryId(value) {
       this.currentCategoryId = value;
     },
+    productColor(value) {
+      this.currentColor = value;
+    },
   },
   methods: {
     submit() {
       this.$emit('update:priceFrom', this.currentPriceFrom);
       this.$emit('update:priceTo', this.currentPriceTo);
       this.$emit('update:categoryId', this.currentCategoryId);
+      this.$emit('update:productColor', this.currentColor);
     },
     reset() {
       this.$emit('update:priceFrom', 0);
       this.$emit('update:priceTo', 0);
       this.$emit('update:categoryId', 0);
+      this.$emit('update:productColor', 0);
     },
   },
 };
