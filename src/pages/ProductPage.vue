@@ -127,7 +127,8 @@
 
             <div class="item__row">
               <div class="form__counter">
-                <button type="button" aria-label="Убрать один товар">
+                <ProductCounter :count.sync="count"/>
+                <!-- <button type="button" aria-label="Убрать один товар">
                   <svg width="12" height="12" fill="currentColor">
                     <use xlink:href="#icon-minus"></use>
                   </svg>
@@ -139,7 +140,7 @@
                   <svg width="12" height="12" fill="currentColor">
                     <use xlink:href="#icon-plus"></use>
                   </svg>
-                </button>
+                </button> -->
               </div>
 
               <button class="button button--primery" type="submit">
@@ -214,6 +215,7 @@ import products from '@/data/products';
 import categories from '@/data/categories';
 import gotoPage from '@/helpers/gotoPage';
 import numberFormat from '@/helpers/numberFormat';
+import ProductCounter from '@/components/ProductCounter.vue';
 
 export default {
   data() {
@@ -221,6 +223,7 @@ export default {
       productAmount: 1,
     };
   },
+  components: { ProductCounter },
   filters: {
     numberFormat,
   },
@@ -240,6 +243,14 @@ export default {
         'addProductToCart',
         { productId: this.product.id, amount: this.productAmount },
       );
+    },
+  },
+  watch: {
+    // This watcher if for situations when for example user puts in a non-existent id and the app breaks. Replace method lets the user come back to the working product page.
+    '$route.params.id'() {
+      if (!this.product) {
+        this.$router.replace({ name: 'notFound' });
+      }
     },
   },
 };
