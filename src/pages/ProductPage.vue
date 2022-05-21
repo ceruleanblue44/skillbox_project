@@ -126,9 +126,9 @@
             </fieldset>
 
             <div class="item__row">
-              <div class="form__counter">
-                <ProductCounter :count.sync="count"/>
-                <!-- <button type="button" aria-label="Убрать один товар">
+              <ProductCounter :count.sync="productAmount"/>
+              <!-- <div class="form__counter">
+                <button type="button" aria-label="Убрать один товар">
                   <svg width="12" height="12" fill="currentColor">
                     <use xlink:href="#icon-minus"></use>
                   </svg>
@@ -140,8 +140,8 @@
                   <svg width="12" height="12" fill="currentColor">
                     <use xlink:href="#icon-plus"></use>
                   </svg>
-                </button> -->
-              </div>
+                </button>
+              </div> -->
 
               <button class="button button--primery" type="submit">
                 В корзину
@@ -244,6 +244,9 @@ export default {
         { productId: this.product.id, amount: this.productAmount },
       );
     },
+    // updateAmount() {
+    //   this.productAmount = count;
+    // },
   },
   watch: {
     // This watcher if for situations when for example user puts in a non-existent id and the app breaks. Replace method lets the user come back to the working product page.
