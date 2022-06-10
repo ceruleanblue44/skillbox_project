@@ -1,6 +1,6 @@
 <template>
   <div class="form__counter">
-      <button type="button" aria-label="Убрать один товар" @click="currentCount - 1">
+      <button type="button" aria-label="Убрать один товар" @click="--currentCount">
       <svg width="12" height="12" fill="currentColor">
         <use xlink:href="#icon-minus"></use>
       </svg>
@@ -8,7 +8,7 @@
 
     <input type="text" v-model.number="currentCount" />
 
-    <button type="button" aria-label="Добавить один товар" @click="currentCount + 1">
+    <button type="button" aria-label="Добавить один товар" @click="++currentCount">
       <svg width="12" height="12" fill="currentColor">
         <use xlink:href="#icon-plus"></use>
       </svg>
@@ -27,7 +27,7 @@ export default {
         return this.count;
       },
       set(value) {
-        if (this.count !== 0) {
+        if (this.count >= 0) {
           this.$emit('update:count', value);
         }
       },

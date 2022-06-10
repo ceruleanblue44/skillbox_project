@@ -29,7 +29,6 @@
             <CartItem v-for="item in products" :key="item.productId" :item="item" />
           </ul>
         </div>
-
         <div class="cart__block">
           <p class="cart__desc">
             Мы&nbsp;посчитаем стоимость доставки на&nbsp;следующем этапе
