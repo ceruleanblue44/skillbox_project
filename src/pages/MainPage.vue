@@ -36,11 +36,12 @@
 
 <script>
 // @ - absolute path to the src folder, works from anywhere
-import products from '@/data/products';
+// import products from '@/data/products';
 import ProductList from '@/components/ProductList.vue';
 import BasePagination from '@/components/BasePagination.vue';
 import ProductFilter from '@/components/ProductFilter.vue';
 import axios from 'axios';
+import { API_BASE_URL } from '../config';
 
 export default {
   components: {
@@ -58,28 +59,28 @@ export default {
     };
   },
   computed: {
-    filteredProducts() {
-      let filteredProducts = products;
-      const Color = (product) => product.colors.find((color) => color.id === this.filterColorId);
+    // filteredProducts() {
+    //   let filteredProducts = products;
+    //   const Color = (product) => product.colors.find((color) => color.id === this.filterColorId);
 
-      if (this.filterPriceFrom > 0) {
-        filteredProducts = filteredProducts.filter((product) => product.price > this.filterPriceFrom);
-      }
+    //   if (this.filterPriceFrom > 0) {
+    //     filteredProducts = filteredProducts.filter((product) => product.price > this.filterPriceFrom);
+    //   }
 
-      if (this.filterPriceTo > 0) {
-        filteredProducts = filteredProducts.filter((product) => product.price < this.filterPriceTo);
-      }
+    //   if (this.filterPriceTo > 0) {
+    //     filteredProducts = filteredProducts.filter((product) => product.price < this.filterPriceTo);
+    //   }
 
-      if (this.filterCategoryId) {
-        filteredProducts = filteredProducts.filter((product) => product.categoryId === this.filterCategoryId);
-      }
+    //   if (this.filterCategoryId) {
+    //     filteredProducts = filteredProducts.filter((product) => product.categoryId === this.filterCategoryId);
+    //   }
 
-      if (this.filterColorId) {
-        filteredProducts = filteredProducts.filter(Color);
-      }
+    //   if (this.filterColorId) {
+    //     filteredProducts = filteredProducts.filter(Color);
+    //   }
 
-      return filteredProducts;
-    },
+    //   return filteredProducts;
+    // },
     products() {
       // Replaced with the API call results:
       // const offset = (this.page - 1) * this.productsPerPage;
@@ -104,13 +105,33 @@ export default {
   },
   methods: {
     loadProducts() {
-      axios.get(`https://vue-study.skillbox.cc/api/products?page=${this.page}&limit=${this.productsPerPage}`)
-        // eslint-disable-next-line no-return-assign
-        .then((response) => this.productsData = response.data);
+      clearTimeout(this.loadProductsTimer);
+      this.loadProductsTimer = setTimeout(() => {
+        axios.get(`${API_BASE_URL}api/products`, {
+          params: {
+            page: this.page,
+            limit: this.productsPerPage,
+            categoryId: this.filterCategoryId,
+            minPrice: this.filterPriceFrom,
+            maxPrice: this.filterPriceTo,
+          },
+        })
+          // eslint-disable-next-line no-return-assign
+          .then((response) => this.productsData = response.data);
+      }, 0);
     },
   },
   watch: {
     page() {
+      this.loadProducts();
+    },
+    filterPriceFrom() {
+      this.loadProducts();
+    },
+    filterPriceTo() {
+      this.loadProducts();
+    },
+    filterCategoryId() {
       this.loadProducts();
     },
   },
