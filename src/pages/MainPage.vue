@@ -81,18 +81,37 @@ export default {
       return filteredProducts;
     },
     products() {
-      const offset = (this.page - 1) * this.productsPerPage;
-      return this.filteredProducts.slice(offset, offset + this.productsPerPage);
+      // Replaced with the API call results:
+      // const offset = (this.page - 1) * this.productsPerPage;
+      // return this.filteredProducts.slice(offset, offset + this.productsPerPage);
+      return this.productsData
+        // eslint-disable-next-line arrow-body-style
+        ? this.productsData.items.map((product) => {
+          return {
+            ...product,
+            // Correct path to the picture:
+            image: product.image.file.url,
+          };
+        })
+        : [];
     },
     countProducts() {
-      return this.filteredProducts.length;
+      // Data from local file:
+      // return this.filteredProducts.length;
+      // Data from API:
+      return this.productsData ? this.productsData.pagination.total : 0;
     },
   },
   methods: {
     loadProducts() {
-      axios.get('https://vue-study.skillbox.cc/api/products')
+      axios.get(`https://vue-study.skillbox.cc/api/products?page=${this.page}&limit=${this.productsPerPage}`)
         // eslint-disable-next-line no-return-assign
         .then((response) => this.productsData = response.data);
+    },
+  },
+  watch: {
+    page() {
+      this.loadProducts();
     },
   },
   created() {
