@@ -16,6 +16,12 @@
                    :product-color.sync="filterColorId"
                    />
    <section class="catalog">
+
+    <div v-if="productsLoading">Загрузка товаров...</div>
+    <div v-if="productsLoadingFailed">Произошла ошибка при загрузке товаров
+      <button @click.prevent="loadProducts">Попробовать еще раз</button>
+    </div>
+
     <ProductList
       :products="products">
     <!-- <ProductItem /> -->
@@ -31,6 +37,7 @@
   </main>
 </template>
 
+<!-- eslint-disable no-return-assign -->
 <!-- eslint-disable max-len -->
 <!-- The prop is in camelCase in the component, but here it's in kebab-case, Vue    automatically converts kebab-case into camelCase when passing props. This syntax is necessary 'cos we are using HTML-based attribute syntax (dashes, no camelCase) -->
 
@@ -56,6 +63,8 @@ export default {
       page: 1,
       productsPerPage: 3,
       productsData: null,
+      productsLoading: false,
+      productsLoadingFailed: false,
     };
   },
   computed: {
@@ -105,6 +114,8 @@ export default {
   },
   methods: {
     loadProducts() {
+      this.productsLoading = true;
+      this.productsLoadingFailed = false;
       clearTimeout(this.loadProductsTimer);
       this.loadProductsTimer = setTimeout(() => {
         axios.get(`${API_BASE_URL}api/products`, {
@@ -116,9 +127,10 @@ export default {
             maxPrice: this.filterPriceTo,
           },
         })
-          // eslint-disable-next-line no-return-assign
-          .then((response) => this.productsData = response.data);
-      }, 0);
+          .then((response) => this.productsData = response.data)
+          .catch(() => this.productsLoadingFailed = true)
+          .then(() => this.productsLoading = false);
+      }, 5000);
     },
   },
   watch: {
