@@ -37,7 +37,6 @@
   </main>
 </template>
 
-<!-- eslint-disable no-return-assign -->
 <!-- eslint-disable max-len -->
 <!-- The prop is in camelCase in the component, but here it's in kebab-case, Vue    automatically converts kebab-case into camelCase when passing props. This syntax is necessary 'cos we are using HTML-based attribute syntax (dashes, no camelCase) -->
 

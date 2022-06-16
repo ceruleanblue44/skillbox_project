@@ -213,7 +213,6 @@
   </div>
 </template>
 
-<!-- eslint-disable no-return-assign -->
 <script>
 
 // import products from '@/data/products';

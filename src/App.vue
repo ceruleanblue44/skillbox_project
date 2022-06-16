@@ -118,9 +118,18 @@
 <script>
 
 import CartIndicator from '@/components/Cart/CartIndicator.vue';
+import { mapActions } from 'vuex';
 
 export default {
   components: { CartIndicator },
+  created() {
+    // This one we can use if we don't do mapActions
+    // this.$store.dispatch('loadCart');
+    this.loadCart();
+  },
+  methods: {
+    ...mapActions(['loadCart']);
+  },
 };
 
 </script>

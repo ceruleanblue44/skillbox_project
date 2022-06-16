@@ -16,5 +16,6 @@ module.exports = {
     'linebreak-style': ['error', 'windows'],
     'max-len': ['error', { 'code': 300 }],
     "object-shorthand": ["error", "always", { "avoidQuotes": false }],
+    "no-return-assign": "off",
   },
 };
