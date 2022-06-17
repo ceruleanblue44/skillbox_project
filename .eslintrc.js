@@ -17,5 +17,6 @@ module.exports = {
     'max-len': ['error', { 'code': 300 }],
     "object-shorthand": ["error", "always", { "avoidQuotes": false }],
     "no-return-assign": "off",
+    "arrow-body-style": ["error", "as-needed", { "requireReturnForObjectLiteral": true }],
   },
 };
