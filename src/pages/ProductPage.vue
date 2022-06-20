@@ -146,10 +146,12 @@
                   </button>
                 </div> -->
 
-                <button class="button button--primery" type="submit">
+                <button class="button button--primery" type="submit" :disabled="productAddSending">
                   В корзину
                 </button>
               </div>
+              <div v-show="productAdded">Товар добавлен в корзину</div>
+              <div v-show="productAddSending">Добавляем товар в корзину</div>
             </form>
           </div>
         </div>
@@ -221,6 +223,7 @@ import gotoPage from '@/helpers/gotoPage';
 import numberFormat from '@/helpers/numberFormat';
 import ProductCounter from '@/components/ProductCounter.vue';
 import axios from 'axios';
+import { mapActions } from 'vuex';
 import { API_BASE_URL } from '../config';
 
 export default {
@@ -230,6 +233,8 @@ export default {
       productData: null,
       productLoading: false,
       productLoadingFailed: false,
+      productAdded: false,
+      productAddSending: false,
     };
   },
   components: { ProductCounter },
@@ -247,13 +252,24 @@ export default {
     },
   },
   methods: {
+    ...mapActions(['addProductToCart']),
+
     gotoPage,
     // commit() calls the mutation, mutation changes the state in the store, takes 2 arguments: name of mutation and any data we want to pass into the mutation handler
     addToCart() {
-      this.$store.commit(
-        'addProductToCart',
-        { productId: this.product.id, amount: this.productAmount },
-      );
+      this.productAdded = false;
+      this.productAddSending = true;
+      this.addProductToCart({ productId: this.product.id, amount: this.productAmount })
+        .then(() => {
+          this.productAdded = true;
+          this.productAddSending = false;
+        });
+      // Change to dispatch:
+      // this.$store.commit(
+      // this.$store.dispatch(
+      //   'addProductToCart',
+      //   { productId: this.product.id, amount: this.productAmount },
+      // );
     },
     loadProduct() {
       this.productLoading = true;
