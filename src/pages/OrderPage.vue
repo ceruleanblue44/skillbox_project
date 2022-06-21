@@ -28,17 +28,25 @@
     </div>
 
     <section class="cart">
-      <form class="cart__form form" action="#" method="POST">
+      <form class="cart__form form" action="#" method="POST" @submit.prevent="order" >
         <div class="cart__field">
           <div class="cart__data">
 
             <BaseFormText v-model="formData.name" title="ФИО" :error="formError.name" placeholder="Введите ваше полное имя" />
 
+            <BaseFormText v-model="formData.address" title="Адрес доставки" :error="formError.address" placeholder="Введите ваш адрес" />
+
+            <BaseFormText v-model="formData.phone" title="Телефон" :error="formError.phone" placeholder="Введите ваш телефон" />
+
+            <BaseFormText v-model="formData.email" title="Email" :error="formError.email" placeholder="Введите ваш Email" />
+
+            <BaseFormTextarea v-model="formData.comment" title="Комментарий к заказу" :error="formError.name" placeholder="Ваши пожелания"/>
+
             <!-- <BaseFormField title="ФИО" :error="formError.name">
               <input class="form__input" v-model="formData.name" type="text" name="name" placeholder="Введите ваше полное имя">
             </BaseFormField> -->
 
-            <label class="form__label">
+            <!-- <label class="form__label">
               <input class="form__input" v-model="formData.address" type="text" name="address" placeholder="Введите ваш адрес">
               <span class="form__value">Адрес доставки</span>
               <span class="form__error" v-if="formError.address">{{ formError.address }}</span>
@@ -54,9 +62,7 @@
               <input class="form__input" v-model="formData.email" type="email" name="email" placeholder="Введи ваш Email">
               <span class="form__value">Email</span>
               <span class="form__error" v-if="formError.email">{{ formError.email }}</span>
-            </label>
-
-            <BaseFormTextarea v-model="formData.comments" title="Комментарий к заказу" :error="formError.name" placeholder="Ваши пожелания"/>
+            </label> -->
 
             <!-- <label class="form__label">
               <textarea class="form__input  form__input--area" v-model="formData.comments" name="comments" placeholder="Ваши пожелания"></textarea>
@@ -135,10 +141,10 @@
             Оформить заказ
           </button>
         </div>
-        <div class="cart__error form__error-block">
+        <div class="cart__error form__error-block" v-if="formErrorMessage">
           <h4>Заявка не отправлена!</h4>
           <p>
-            Похоже произошла ошибка. Попробуйте отправить снова или перезагрузите страницу.
+            {{ formErrorMessage }}
           </p>
         </div>
       </form>
@@ -149,6 +155,8 @@
 <script>
 import BaseFormText from '@/components/BaseFormText.vue';
 import BaseFormTextarea from '@/components/BaseFormTextarea.vue';
+import axios from 'axios';
+import { API_BASE_URL } from '../config';
 
 export default {
   components: { BaseFormText, BaseFormTextarea },
@@ -156,7 +164,32 @@ export default {
     return {
       formData: {},
       formError: {},
+      formErrorMessage: '',
     };
+  },
+  methods: {
+    order() {
+      this.formError = {};
+      this.formErrorMessage = '';
+
+      axios
+        .post(`${API_BASE_URL}api/orders`, {
+          ...this.formData,
+        }, {
+          params: {
+            userAccessKey: this.$store.state.userAccessKey,
+          },
+        })
+        .then((response) => {
+          this.$store.commit('resetCart');
+          this.$store.commit('updateOrderInfo', response.data);
+          this.$router.push({ name: 'orderInfo', params: { id: response.data.id } });
+        })
+        .catch((error) => {
+          this.formError = error.response.data.error.request || {};
+          this.formErrorMessage = error.response.data.error.message;
+        });
+    },
   },
 };
 </script>
