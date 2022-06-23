@@ -15,7 +15,7 @@
          {{ product.price | numberFormat }} ₽
         </span>
 
-        <ColorList class="colors colors--black"
+        <ColorList
             :color-list="product.colors"
             :current-color.sync="currentColor"/>
 

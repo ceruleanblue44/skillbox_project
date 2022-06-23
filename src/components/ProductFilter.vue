@@ -29,7 +29,7 @@
       <fieldset class="form__block">
         <legend class="form__legend">Цвет</legend>
         <ul class="colors">
-          <ColorList class="colors"
+          <ColorList
             :color-list="colors"
             :current-color.sync="currentColor"/>
         </ul>
@@ -109,7 +109,7 @@
 
 // import categories from '../data/categories';
 import axios from 'axios';
-import colors from '../data/colors';
+// import colors from '../data/colors';
 import ColorList from './ColorList.vue';
 import { API_BASE_URL } from '../config';
 
@@ -121,6 +121,7 @@ export default {
       currentCategoryId: 0,
       currentColor: '',
       categoriesData: null,
+      colorsData: null,
     };
   },
   components: { ColorList },
@@ -130,7 +131,7 @@ export default {
       return this.categoriesData ? this.categoriesData.items : [];
     },
     colors() {
-      return colors;
+      return this.colorsData ? this.colorsData.items : [];
     },
   },
   watch: {
@@ -165,9 +166,15 @@ export default {
         // eslint-disable-next-line no-return-assign
         .then((response) => this.categoriesData = response.data);
     },
+    loadColors() {
+      axios.get(`${API_BASE_URL}api/colors`)
+        // eslint-disable-next-line no-return-assign
+        .then((response) => this.colorsData = response.data);
+    },
   },
   created() {
     this.loadCategories();
+    this.loadColors();
   },
 };
 </script>

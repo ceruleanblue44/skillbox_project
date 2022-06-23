@@ -100,6 +100,7 @@ export default {
             ...product,
             // Correct path to the picture:
             image: product.image.file.url,
+            // color: product.
           };
         })
         : [];
@@ -122,6 +123,7 @@ export default {
             page: this.page,
             limit: this.productsPerPage,
             categoryId: this.filterCategoryId,
+            colorId: this.filterColorId,
             minPrice: this.filterPriceFrom,
             maxPrice: this.filterPriceTo,
           },
@@ -143,6 +145,9 @@ export default {
       this.loadProducts();
     },
     filterCategoryId() {
+      this.loadProducts();
+    },
+    filterColorId() {
       this.loadProducts();
     },
   },

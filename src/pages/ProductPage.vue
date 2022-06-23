@@ -23,7 +23,7 @@
             <img
               width="570"
               height="570"
-              :src="product.image"
+              :src="product.image.file.url"
               :alt="product.title"
             />
           </div>
@@ -34,7 +34,7 @@
           <h2 class="item__title">{{ product.title }}</h2>
           <div class="item__form">
             <form class="form" action="#" method="POST" @submit.prevent="addToCart">
-              <b class="item__price"> {{ product.price | numberFormat }} ₽ </b>
+              <b class="item__price"> {{ product.price * productAmount | numberFormat }} ₽ </b>
 
               <fieldset class="form__block">
                 <legend class="form__legend">Цвет:</legend>
@@ -129,7 +129,7 @@
               </fieldset>
 
               <div class="item__row">
-                <ProductCounter :count.sync="productAmount"/>
+                <ProductCounter class="product__counter form__counter" :count.sync="productAmount"/>
                 <!-- <div class="form__counter">
                   <button type="button" aria-label="Убрать один товар">
                     <svg width="12" height="12" fill="currentColor">
@@ -219,10 +219,10 @@
 
 // import products from '@/data/products';
 // import categories from '@/data/categories';
+import axios from 'axios';
 import gotoPage from '@/helpers/gotoPage';
 import numberFormat from '@/helpers/numberFormat';
 import ProductCounter from '@/components/ProductCounter.vue';
-import axios from 'axios';
 import { mapActions } from 'vuex';
 import { API_BASE_URL } from '../config';
 
