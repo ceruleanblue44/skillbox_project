@@ -45,7 +45,7 @@
 
 import ProductCounter from '@/components/ProductCounter.vue';
 import numberFormat from '@/helpers/numberFormat';
-import { mapMutations } from 'vuex';
+import { mapActions } from 'vuex';
 
 export default {
   filters: { numberFormat },
@@ -62,7 +62,10 @@ export default {
     },
   },
   methods: {
-    ...mapMutations({ deleteProduct: 'deleteCartProduct' }),
+    ...mapActions(['deleteCartProduct']),
+    deleteProduct(productId) {
+      this.deleteCartProduct({ productId });
+    },
   },
 };
 </script>

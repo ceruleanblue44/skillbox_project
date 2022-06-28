@@ -20,7 +20,7 @@
       </ul>
 
       <h1 class="content__title">
-        Заказ оформлен <span>№ 23621</span>
+        Заказ оформлен <span>{{ products.id }}</span>
       </h1>
     </div>
 
@@ -31,8 +31,8 @@
             Благодарим за&nbsp;выбор нашего магазина. На&nbsp;Вашу почту придет письмо с&nbsp;деталями заказа.
             Наши менеджеры свяжутся с&nbsp;Вами в&nbsp;течение часа для уточнения деталей доставки.
           </p>
-
-          <ul class="dictionary">
+          <OrderDictionary :dictionary="dictionary"/>
+          <!-- <ul class="dictionary">
             <li class="dictionary__item">
               <span class="dictionary__key">
                 Получатель
@@ -73,11 +73,14 @@
                 картой при получении
               </span>
             </li>
-          </ul>
+          </ul> -->
         </div>
 
         <div class="cart__block">
-          <ul class="cart__orders">
+          <OrderItems :products="products.basket.items"
+                      :totalPrice="products.totalPrice"
+                      :totalItems="products.basket.items.length"/>
+          <!-- <ul class="cart__orders">
             <li class="cart__order">
               <h3>Смартфон Xiaomi Redmi Note 7 Pro 6/128GB</h3>
               <b>18 990 ₽</b>
@@ -98,7 +101,7 @@
           <div class="cart__total">
             <p>Доставка: <b>500 ₽</b></p>
             <p>Итого: <b>3</b> товара на сумму <b>37 970 ₽</b></p>
-          </div>
+          </div> -->
         </div>
       </form>
     </section>
@@ -106,7 +109,26 @@
 </template>
 
 <script>
+import OrderItems from '@/components/OrderItems.vue';
+import OrderDictionary from '@/components/OrderDictionary.vue';
+import { mapGetters } from 'vuex';
+
 export default {
+  components: { OrderItems, OrderDictionary },
+  computed: {
+    ...mapGetters({
+      products: 'orderInfoItems',
+    }),
+    dictionary() {
+      return [
+        { key: 'Получатель', value: this.products.name, field: 1 },
+        { key: 'Адрес доставки', value: this.products.address, field: 2 },
+        { key: 'Телефон', value: this.products.phone, field: 3 },
+        { key: 'Email', value: this.products.email, field: 4 },
+        { key: 'Способ оплаты', value: 'картой при получении', field: 5 },
+      ];
+    },
+  },
   created() {
     if (this.$store.state.orderInfo && this.$store.state.orderInfo.id === this.$route.params.id) {
       return;

@@ -85,6 +85,9 @@ export default new Vuex.Store({
     cartTotalItems(state) {
       return state.cartProducts.length;
     },
+    orderInfoItems(state) {
+      return state.orderInfo;
+    },
   },
   actions: {
     loadOrderInfo(context, orderId) {
@@ -131,6 +134,25 @@ export default new Vuex.Store({
               context.commit('updateCartProductsData', response.data.items);
               context.commit('syncCartProducts');
             });
+        });
+    },
+    deleteCartProduct(context, { productId }) {
+      context.commit('deleteCartProduct', { productId });
+      return axios
+        .delete(`${API_BASE_URL}api/baskets/products`, {
+          data: {
+            productId,
+          },
+          params: {
+            userAccessKey: context.state.userAccessKey,
+          },
+        })
+        .then((response) => {
+          context.commit('updateCartProductsData', response.data.items);
+          context.commit('syncCartProducts');
+        })
+        .catch(() => {
+          context.commit('syncCartProducts');
         });
     },
     updateCartProductAmount(context, { productId, amount }) {
